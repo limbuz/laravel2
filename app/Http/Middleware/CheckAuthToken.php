@@ -19,8 +19,13 @@ class CheckAuthToken
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->header('token')) {
+        if (!$request->header('token') || !$request->input('token')) {
             return response()->json(['error' => 'Invalid Auth-Token'], 401);
+        }
+
+        $token = $request->header('token');
+        if (!$token) {
+            $token = $request->input('token');
         }
 
         $hasUid = Session::query()

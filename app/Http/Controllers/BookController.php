@@ -54,7 +54,7 @@ class BookController extends Controller
 
         $foundBooks = json_decode($response->body(), true)['items'];
 
-        foreach ($foundBooks as $book) {
+        foreach (array_slice($foundBooks, 0, 4) as $book) {
             $info = $book['volumeInfo'];
 
             $data[] = [

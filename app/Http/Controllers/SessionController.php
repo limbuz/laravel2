@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SessionRequest;
+use App\Http\Services\SessionService;
 use App\Models\Profile;
 use App\Models\Session;
 use Illuminate\Http\Request;
@@ -11,6 +12,13 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 class SessionController extends Controller
 {
+    private SessionService $sessionService;
+
+    public function __construct(SessionService $sessionService)
+    {
+        $this->sessionService = $sessionService;
+    }
+
     public function store(SessionRequest $request)
     {
         $profile = Profile::query()
@@ -22,14 +30,11 @@ class SessionController extends Controller
             return response()->json(['error' => 'Profile not found'], 401);
         }
 
-        $session = new Session();
-        $session->profile_id = $profile->id;
-        $session->uid = md5(Str::random());
-        $session->timestamp_start = time();
+        $token = $this->sessionService->saveSession($profile);
 
-        if ($session->save()) {
+        if ($token) {
             return response()
-                ->json(['token' => $session->uid]);
+                ->json(['token' => $token]);
         }
 
         return response()->json(['error' => 'Unable to create a session'], 400);

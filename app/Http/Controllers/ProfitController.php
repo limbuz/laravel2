@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class ProfitController extends Controller
 {
     const SECONDS_IN_WEEK = 60 * 60 * 24 * 7;
-    const SECONDS_IN_DAY = 60 * 60 * 24;
+    const SECONDS_IN_DAY  = 60 * 60 * 24;
 
     public function index(ProfitGetRequest $request)
     {
